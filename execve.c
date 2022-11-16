@@ -1,29 +1,24 @@
-#include "shell.h"
+#include "main.h"
 
 /**
- * execution - executes commands entered by users
- *@cp: command
- *@cmd:vector array of pointers to commands
- * Return: 0
- */
-void execution(char *cp, char **cmd)
+* argv - get the command
+* execmd - generate full path
+*
+* Return: if -1 return error otherwise generate command
+*/
+void execmd(char **argv)
 {
+	char *command = NULL, *actual_command = NULL;
 
-	pid_t child_pid;
-	int status;
-	char **env = environ;
-
-	child_pid = fork();
-	if (child_pid < 0)
-		perror(cp);
-	if (child_pid == 0)
+	if (argv)
 	{
-		execve(cp, cmd, env);
-		perror(cp);
-		free(cp);
-		free_buffers(cmd);
-		exit(98);
+	command = argv[0];
+
+        actual_command = get_location(command);
+
+        if (execve(actual_command, argv, NULL) == -1)
+		{
+		perror("Error:");
+        	}
 	}
-	else
-		wait(&status);
 }
